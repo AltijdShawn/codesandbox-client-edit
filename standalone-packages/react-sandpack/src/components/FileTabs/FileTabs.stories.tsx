@@ -8,21 +8,11 @@ export default {
   title: 'components/File Tabs',
 };
 
-export const Component = () => (
+export const Component = args => (
   <SandpackProvider
     entry="/index.tsx"
-    openPaths={['/index.tsx', '/src/app.tsx', '/src/components/button.tsx']}
-    files={{
-      '/index.tsx': {
-        code: '',
-      },
-      '/src/app.tsx': {
-        code: '',
-      },
-      '/src/components/button.tsx': {
-        code: '',
-      },
-    }}
+    openPaths={args.openPaths}
+    files={args.files}
     dependencies={{}}
   >
     <SandpackLayout>
@@ -31,26 +21,40 @@ export const Component = () => (
   </SandpackProvider>
 );
 
-export const WithHiddenFiles = () => (
-  <SandpackProvider
-    entry="/index.tsx"
-    openPaths={['/src/app.tsx', '/src/components/button.tsx']}
-    files={{
-      '/index.tsx': {
-        // Not visible
-        code: '',
-      },
-      '/src/app.tsx': {
-        code: '',
-      },
-      '/src/components/button.tsx': {
-        code: '',
-      },
-    }}
-    dependencies={{}}
-  >
+Component.args = {
+  files: {
+    '/index.tsx': {
+      code: '',
+    },
+    '/src/app.tsx': {
+      code: '',
+    },
+    '/src/components/button.tsx': {
+      code: '',
+    },
+  },
+  openPaths: ['/index.tsx', '/src/app.tsx', '/src/components/button.tsx'],
+};
+
+export const WithHiddenFiles = args => (
+  <SandpackProvider entry="/index.tsx" {...args} dependencies={{}}>
     <SandpackLayout>
       <FileTabs />
     </SandpackLayout>
   </SandpackProvider>
 );
+WithHiddenFiles.args = {
+  files: {
+    '/index.tsx': {
+      // Not visible
+      code: '',
+    },
+    '/src/app.tsx': {
+      code: '',
+    },
+    '/src/components/button.tsx': {
+      code: '',
+    },
+  },
+  openPaths: ['/src/app.tsx', '/src/components/button.tsx'],
+};

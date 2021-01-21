@@ -30,7 +30,7 @@ export const Component: Story<CodeViewerProps> = args => (
 
 const reactTemplate = SANDBOX_TEMPLATES.react;
 
-export const ReactCode = () => (
+export const ReactCode = args => (
   <SandpackProvider
     entry={reactTemplate.entry}
     environment="create-react-app"
@@ -39,14 +39,14 @@ export const ReactCode = () => (
     dependencies={reactTemplate.dependencies}
   >
     <SandpackLayout>
-      <CodeViewer />
+      <CodeViewer {...args} />
     </SandpackLayout>
   </SandpackProvider>
 );
 
 const vueTemplate = SANDBOX_TEMPLATES.vue;
 
-export const VueCode = () => (
+export const VueCode = args => (
   <SandpackProvider
     entry={vueTemplate.entry}
     environment="vue-cli"
@@ -55,7 +55,7 @@ export const VueCode = () => (
     dependencies={vueTemplate.dependencies}
   >
     <SandpackLayout>
-      <CodeViewer />
+      <CodeViewer {...args} />
     </SandpackLayout>
   </SandpackProvider>
 );

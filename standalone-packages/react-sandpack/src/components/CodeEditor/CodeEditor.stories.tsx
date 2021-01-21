@@ -32,7 +32,7 @@ export const Component: Story<CodeEditorProps> = args => (
 
 const reactTemplate = SANDBOX_TEMPLATES.react;
 
-export const ReactCode = () => (
+export const ReactCode = args => (
   <SandpackProvider
     entry={reactTemplate.entry}
     environment="create-react-app"
@@ -41,14 +41,18 @@ export const ReactCode = () => (
     dependencies={reactTemplate.dependencies}
   >
     <SandpackLayout>
-      <CodeEditor showLineNumbers />
+      <CodeEditor {...args} />
     </SandpackLayout>
   </SandpackProvider>
 );
 
+ReactCode.args = {
+  showLineNumbers: true,
+};
+
 const vueTemplate = SANDBOX_TEMPLATES.vue;
 
-export const VueCode = () => (
+export const VueCode = args => (
   <SandpackProvider
     entry={vueTemplate.entry}
     environment="vue-cli"
@@ -57,12 +61,12 @@ export const VueCode = () => (
     dependencies={vueTemplate.dependencies}
   >
     <SandpackLayout>
-      <CodeEditor />
+      <CodeEditor {...args} />
     </SandpackLayout>
   </SandpackProvider>
 );
 
-export const DarkTheme = () => (
+export const DarkTheme = args => (
   <ThemeProvider value={sandpackDarkTheme}>
     <SandpackProvider
       entry={vueTemplate.entry}
@@ -71,9 +75,13 @@ export const DarkTheme = () => (
       openPaths={[vueTemplate.main]}
       dependencies={vueTemplate.dependencies}
     >
-      <SandpackLayout className={compileStitchesTheme(sandpackDarkTheme)}>
-        <CodeEditor />
+      <SandpackLayout className={compileStitchesTheme(args.theme)}>
+        <CodeEditor {...args} />
       </SandpackLayout>
     </SandpackProvider>
   </ThemeProvider>
 );
+
+DarkTheme.args = {
+  theme: sandpackDarkTheme,
+};
