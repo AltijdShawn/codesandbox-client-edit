@@ -128,5 +128,23 @@ requirePolyfills().then(() => {
 
         compile(data);
       });
+    window
+      .fetch(host + `/api/v1/sandboxes/${id}/phishing`, {
+        headers: {
+          Accept: 'application/json',
+        },
+        credentials: 'include',
+        mode: 'cors',
+      })
+      .then(res => res.json())
+      .then(
+        res =>
+          // Show banner here?
+          // res = { flagged : true | false}
+          // if true and cookie is not set (see next line) -> show banner
+          // closing banner manually means, it sets a cookie to the specific app domain <sandboxId>.csb.app only
+          // if false -> do nothing
+          res
+      );
   }
 });
