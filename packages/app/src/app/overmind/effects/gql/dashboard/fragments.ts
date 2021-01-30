@@ -175,6 +175,20 @@ export const currentTeamInfoFragment = gql`
       preventSandboxLeaving
       defaultAuthorization
     }
+
+    subscription {
+      id
+      type
+      status
+      origin
+      quantity
+      unitPrice
+      currency
+      billingInterval
+      updateBillingUrl
+      nextBillDate
+      cancelAt
+    }
   }
 `;
 

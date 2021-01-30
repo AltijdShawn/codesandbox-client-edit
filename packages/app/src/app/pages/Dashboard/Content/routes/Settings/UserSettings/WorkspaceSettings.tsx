@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -12,14 +13,14 @@ import {
 } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import React, { useEffect } from 'react';
+import { WorkspaceSubscriptionOrigin } from 'app/graphql/types';
 
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 
 export const WorkspaceSettings = () => {
   const {
-    state: { user, activeTeam },
+    state: { user, activeTeam, activeTeamInfo },
     actions,
   } = useOvermind();
 
@@ -32,8 +33,7 @@ export const WorkspaceSettings = () => {
   }
 
   // @ts-ignore
-  const isPro = user.subscription_plan || user.subscription;
-  const value = (user.subscription && user.subscription.amount) || 9;
+  const activeSubscription = activeTeamInfo?.subscription;
 
   return (
     <Grid
@@ -121,9 +121,9 @@ export const WorkspaceSettings = () => {
               Plan
             </Text>
             <Text size={3} maxWidth="100%">
-              {isPro ? 'Pro Plan' : 'Community Plan'}
+              {activeSubscription ? 'Personal Pro' : 'Community Plan'}
             </Text>
-            {isPro ? (
+            {activeSubscription ? (
               <>
                 <Button
                   variant="link"
@@ -163,16 +163,36 @@ export const WorkspaceSettings = () => {
           </Stack>
         </Stack>
       </Card>
-      {isPro ? (
+      {activeSubscription ? (
         <Card>
           <Stack direction="vertical" gap={2}>
             <Stack direction="vertical" gap={2}>
               <Text size={6} weight="bold" maxWidth="100%">
                 Invoice details
               </Text>
-              <Text size={3} maxWidth="100%">
-                US${value}
-              </Text>
+              {activeTeamInfo?.subscription && (
+                <div>
+                  {activeTeamInfo?.subscription.origin ===
+                  WorkspaceSubscriptionOrigin.Patron ? (
+                    <Text size={3} variant="muted">
+                      USD {user?.subscription.amount}{' '}
+                    </Text>
+                  ) : (
+                    <Text size={3} variant="muted">
+                      {activeTeamInfo?.subscription.currency}{' '}
+                      {(
+                        (activeTeamInfo.subscription.quantity *
+                          activeTeamInfo.subscription.unitPrice) /
+                        100
+                      ).toFixed(2)}{' '}
+                      <Text css={{ textTransform: 'capitalize' }}>
+                        {activeTeamInfo.subscription.billingInterval.toLowerCase()}
+                      </Text>
+                    </Text>
+                  )}
+                </div>
+              )}
+
               <Text size={3} maxWidth="100%">
                 Invoices are sent to
               </Text>
@@ -184,28 +204,19 @@ export const WorkspaceSettings = () => {
         </Card>
       ) : (
         <Card style={{ backgroundColor: 'white' }}>
-          <Stack direction="vertical" gap={4}>
-            <Text size={6} weight="bold" css={css({ color: 'grays.800' })}>
-              Pro
+          <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
+            <Text size={6} weight="bold">
+              Go Pro
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                Everything in Community, plus:
-              </Text>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                + Unlimited Private Sandboxes
-              </Text>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                + Private GitHub Repos
-              </Text>
+              <Text size={3}>Community, plus:</Text>
+              <Text size={3}>+ Work in private</Text>
+              <Text size={3}>+ More file storage</Text>
+              <Text size={3}>+ Higher upload limits</Text>
+              <Text size={3}>+ Flexible permissions</Text>
             </Stack>
-            <Button
-              as="a"
-              href="https://codesandbox.io/pro"
-              target="_blank"
-              marginTop={2}
-            >
-              Subscribe to Pro
+            <Button as="a" href="/pro" target="_blank" marginTop={2}>
+              Upgrade to Pro
             </Button>
           </Stack>
         </Card>
